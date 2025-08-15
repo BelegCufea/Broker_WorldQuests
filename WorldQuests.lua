@@ -342,6 +342,10 @@ local RetrieveWorldQuests = function(mapId)
 									rewardType[#rewardType+1] = CONSTANTS.REWARD_TYPES.BLOODOFSARGERAS
 								end
 								if BWQ:C("showItems") and BWQ:C("showCraftingMaterials") then quest.hide = false end
+							elseif itemId == 245653 then -- coffer key shards
+								quest.reward.cofferKeyShards = quest.reward.itemQuantity
+								rewardType[#rewardType+1] = CONSTANTS.REWARD_TYPES.COFFER_KEY_SHARDS
+								if BWQ:C("showCofferKeyShards") then quest.hide = false end
 							elseif equipSlot ~= "" or itemId == 163857 --[[ Azerite Armor Cache ]] then
 								quest.sort = quest.sort > CONSTANTS.SORT_ORDER.EQUIP and quest.sort or CONSTANTS.SORT_ORDER.EQUIP
 								quest.reward.realItemLevel = BWQ:GetItemLevelValueForQuestId(quest.questID)
@@ -808,6 +812,8 @@ local RetrieveWorldQuests = function(mapId)
 									BWQ.totalValorstones = BWQ.totalValorstones + quest.reward.ValorstonesAmount
 								elseif rtype == CONSTANTS.REWARD_TYPES.KEJ then
 									BWQ.totalKej = BWQ.totalKej + quest.reward.KejAmount
+								elseif rtype == CONSTANTS.REWARD_TYPES.COFFER_KEY_SHARDS and quest.reward.cofferKeyShards then
+									BWQ.totalCofferKeyShards = BWQ.totalCofferKeyShards + quest.reward.cofferKeyShards
 								elseif rtype == CONSTANTS.REWARD_TYPES.COUNCIL_OF_DORNOGAL then
 									BWQ.totalCouncilofDornogal = BWQ.totalCouncilofDornogal + quest.reward.CouncilofDornogalAmount
 								elseif rtype == CONSTANTS.REWARD_TYPES.THE_WEAVER then
@@ -1025,6 +1031,7 @@ function BWQ:UpdateQuestData()
 	BWQ.totalPolishedPetCharms, BWQ.totalCouncilofDornogal, BWQ.totalTheWeaver, BWQ.totalTheGeneral, BWQ.totalTheVizier = 0, 0, 0, 0, 0
 	BWQ.totalXP, BWQ.totalBronzeCelebrationToken, BWQ.totalWeatheredUndermineCrest, BWQ.totalCarvedUndermineCrest, BWQ.totalTheCartelsOfUndermine = 0, 0, 0, 0, 0
 	BWQ.totalTheBilgewaterCartel, BWQ.totalTheBlackwaterCartel, BWQ.totalTheSteamwheedleCartel, BWQ.totalTheVentureCompany, BWQ.totalWeatheredEtherealCrest = 0, 0, 0, 0, 0
+	BWQ.totalCofferKeyShards = 0
 
 	for mapId in next, BWQ.MAP_ZONES[BWQ.expansion] do
 		RetrieveWorldQuests(mapId)
@@ -1629,6 +1636,7 @@ function BWQ:UpdateBlock()
 		if BWQ:C("brokerShowHallowfallArathi") 		and BWQ.totalHallowfallArathi > 0		then brokerString = string.format("%s|TInterface\\Icons\\ui_majorfactions_flame:16:16|t %d  ", brokerString, BWQ.totalHallowfallArathi) end
 		if BWQ:C("brokerShowValorstones") 			and BWQ.totalValorstones > 0			then brokerString = string.format("%s|TInterface\\Icons\\inv_valorstone_base:16:16|t %d  ", brokerString, BWQ.totalValorstones) end
 		if BWQ:C("brokerShowKej") 					and BWQ.totalKej > 0					then brokerString = string.format("%s|TInterface\\Icons\\inv_10_tailoring_silkrare_color3:16:16|t %d  ", brokerString, BWQ.totalKej) end
+		if BWQ:C("brokerShowCofferKeyShards")    	and BWQ.totalCofferKeyShards > 0  		then brokerString = string.format("%s|TInterface\\Icons\\inv_gizmo_hardenedadamantitetube:16:16|t %d  ", brokerString, BWQ.totalCofferKeyShards) end
 		if BWQ:C("brokerShowCouncilofDornogal") 	and BWQ.totalCouncilofDornogal > 0		then brokerString = string.format("%s|TInterface\\Icons\\ui_majorfactions_storm:16:16|t %d  ", brokerString, BWQ.totalCouncilofDornogal) end
 		if BWQ:C("brokerShowTheWeaver") 			and BWQ.totalTheWeaver > 0				then brokerString = string.format("%s|TInterface\\Icons\\ui_notoriety_theweaver:16:16|t %d  ", brokerString, BWQ.totalTheWeaver) end
 		if BWQ:C("brokerShowTheGeneral") 			and BWQ.totalTheGeneral > 0				then brokerString = string.format("%s|TInterface\\Icons\\ui_notoriety_thegeneral:16:16|t %d  ", brokerString, BWQ.totalTheGeneral) end
